@@ -26,8 +26,8 @@
 
 1. 克隆仓库：
 ```bash
-git clone <你的仓库地址>
-cd picapi-pub
+git clone https://github.com/MEIQIUawa/pictureapi.git
+cd pictureapi
 ```
 
 2. 将文件上传到Web服务器的公共目录
