@@ -2,6 +2,8 @@
 
 A dynamic wallpaper API service that automatically serves appropriate wallpapers based on device type detection.
 
+**Read this in other languages: [English](README.md), [中文](README_CN.md).**
+
 ## 🌟 Features
 
 - **Device Detection**: Automatically detects and serves wallpapers for PC or mobile devices
@@ -70,17 +72,6 @@ body {
   background-position: center;
 }
 ```
-
-## 🏗️ Project Structure
-picapi-pub/
-├── public/
-│   ├── api/           # API endpoints
-│   ├── upload/        # Upload handling
-│   ├── css/          # Stylesheets
-│   ├── js/           # JavaScript libraries
-│   ├── index.php     # Main interface
-│   └── install.php   # Installation wizard
-└── desc.txt          # Site description
 
 ## 🔧 Configuration
 
