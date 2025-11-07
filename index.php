@@ -478,7 +478,7 @@ fclose($handle); // 关闭文件句柄
         <a href="#" onclick="showPage('api')">API文档</a>
         <a href="#" onclick="showPage('submit')">投稿</a>
         <a href="#" onclick="showPage('status')">站点状态</a>
-        <a href="https://github.com/MEIQIUawa" target="_blank">
+        <a href="https://github.com/MEIQIUawa/pictureapi" target="_blank">
             <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub" style="width:20px; vertical-align:middle;"> Github
         </a>
     </div>
