@@ -26,8 +26,8 @@ A dynamic wallpaper API service that automatically serves appropriate wallpapers
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
-cd picapi-pub
+git clone https://github.com/MEIQIUawa/pictureapi.git
+cd pictureapi
 ```
 
 2. Upload files to your web server's public directory
