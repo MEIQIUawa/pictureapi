@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量上传</title>
+    <script src="https://cdn.jsdmirror.com/npm/vue@3.2.31/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdmirror.com/npm/axios@0.27.2/dist/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .auth-section, .upload-section, .files-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input[type="text"], input[type="file"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .file-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .file-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .file-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .file-info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.3s;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .token-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="header">
+            <h1>壁纸API图片批量上传入口</h1>
+            <p>Wallpaper API image batch upload entrance</p>
+        </div>
+        
+        <div class="content">
+            <!-- 认证区域 -->
+            <div class="auth-section" v-if="!isAuthenticated">
+                <h2 class="section-title">Token 认证</h2>
+                <div class="form-group">
+                    <label for="token">请输入Token:</label>
+                    <input type="text" id="token" v-model="token" placeholder="输入您的认证token" @keyup.enter="authenticate">
+                </div>
+                <button class="btn btn-primary" @click="authenticate">认证</button>
+                
+                <div class="token-info" v-if="tokenInfo">
+                    <h3>Token信息</h3>
+                    <p>IP地址: {{ tokenInfo.ip }}</p>
+                    <p>有效期至: {{ tokenInfo.expires }}</p>
+                </div>
+            </div>
+            
+            <!-- 上传区域 -->
+            <div class="upload-section" v-if="isAuthenticated">
+                <h2 class="section-title">批量图片上传</h2>
+                
+                <div class="form-group">
+                    <label>上传类型:</label>
+                    <select v-model="uploadType">
+                        <option value="pc">PC端图片</option>
+                        <option value="phone">手机端图片</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>选择文件 (多选):</label>
+                    <input type="file" multiple @change="handleFileSelect" ref="fileInput">
+                </div>
+                
+                <button class="btn btn-success" @click="uploadFiles" :disabled="!files.length">
+                    开始上传 ({{ files.length }}个文件)
+                </button>
+                
+                <div v-if="uploadProgress > 0" class="progress-bar">
+                    <div class="progress" :style="{width: uploadProgress + '%'}"></div>
+                </div>
+                
+                <div v-for="(result, index) in uploadResults" :key="index" class="alert" :class="result.success ? 'alert-success' : 'alert-error'">
+                    {{ result.filename }}: {{ result.message }}
+                </div>
+            </div>
+            
+            <!-- 文件管理区域 -->
+            <div class="files-section" v-if="isAuthenticated" style="display: none;">
+                <h2 class="section-title">已上传文件</h2>
+                <button class="btn btn-primary" @click="loadFiles">刷新列表</button>
+                
+                <div class="file-list">
+                    <div v-for="file in filesList" :key="file.id" class="file-card">
+                        <div class="file-name">{{ file.original_name }}</div>
+                        <div class="file-info">类型: {{ file.upload_type }}</div>
+                        <div class="file-info">大小: {{ formatFileSize(file.file_size) }}</div>
+                        <div class="file-info">上传时间: {{ formatDate(file.uploaded_at) }}</div>
+                        <button class="btn btn-danger" @click="deleteFile(file.id)">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
+        
+        createApp({
+            setup() {
+                const isAuthenticated = ref(false);
+                const token = ref('');
+                const uploadType = ref('pc');
+                const files = ref([]);
+                const uploadProgress = ref(0);
+                const uploadResults = ref([]);
+                const filesList = ref([]);
+                const tokenInfo = ref(null);
+                const fileInput = ref(null);
+                
+                // 检查是否已认证
+                const checkAuth = () => {
+                    const auth = localStorage.getItem('isAuthenticated');
+                    const expireTime = localStorage.getItem('expireTime');
+                    
+                    if (auth && expireTime && Date.now() < parseInt(expireTime)) {
+                        isAuthenticated.value = true;
+                        loadFiles();
+                    }
+                };
+                
+                // Token认证
+                const authenticate = async () => {
+                    try {
+                        const response = await axios.post('auth.php', {
+                            token: token.value
+                        });
+                        
+                        if (response.data.success) {
+                            isAuthenticated.value = true;
+                            localStorage.setItem('isAuthenticated', 'true');
+                            localStorage.setItem('expireTime', Date.now() + 20 * 60 * 1000);
+                            loadFiles();
+                        }
+                    } catch (error) {
+                        alert(error.response?.data?.message || '认证失败');
+                    }
+                };
+                
+                // 文件选择处理
+                const handleFileSelect = (event) => {
+                    files.value = Array.from(event.target.files);
+                };
+                
+                // 上传文件
+                const uploadFiles = async () => {
+                    if (!files.value.length) return;
+                    
+                    const formData = new FormData();
+                    formData.append('upload_type', uploadType.value);
+                    
+                    files.value.forEach(file => {
+                        formData.append('files[]', file);
+                    });
+                    
+                    try {
+                        uploadProgress.value = 0;
+                        uploadResults.value = [];
+                        
+                        const response = await axios.post('upload_api.php', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            },
+                            onUploadProgress: (progressEvent) => {
+                                const percent = Math.round(
+                                    (progressEvent.loaded * 100) / progressEvent.total
+                                );
+                                uploadProgress.value = percent;
+                            }
+                        });
+                        
+                        if (response.data.success) {
+                            uploadResults.value = response.data.results;
+                            loadFiles();
+                            fileInput.value.value = '';
+                            files.value = [];
+                        }
+                    } catch (error) {
+                        alert(error.response?.data?.message || '上传失败');
+                    }
+                };
+                
+                // 加载文件列表
+                const loadFiles = async () => {
+                    try {
+                        const response = await axios.get('files_api.php');
+                        filesList.value = response.data.files;
+                    } catch (error) {
+                        console.error('加载文件列表失败');
+                    }
+                };
+                
+                // 删除文件
+                const deleteFile = async (fileId) => {
+                    if (!confirm('确定要删除这个文件吗？')) return;
+                    
+                    try {
+                        await axios.delete('files_api.php', {
+                            data: { file_id: fileId }
+                        });
+                        loadFiles();
+                    } catch (error) {
+                        alert('删除失败');
+                    }
+                };
+                
+                // 格式化文件大小
+                const formatFileSize = (bytes) => {
+                    if (bytes === 0) return '0 B';
+                    const k = 1024;
+                    const sizes = ['B', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                };
+                
+                // 格式化日期
+                const formatDate = (dateString) => {
+                    return new Date(dateString).toLocaleString();
+                };
+                
+                onMounted(() => {
+                    checkAuth();
+                });
+                
+                return {
+                    isAuthenticated,
+                    token,
+                    uploadType,
+                    files,
+                    uploadProgress,
+                    uploadResults,
+                    filesList,
+                    tokenInfo,
+                    fileInput,
+                    authenticate,
+                    handleFileSelect,
+                    uploadFiles,
+                    loadFiles,
+                    deleteFile,
+                    formatFileSize,
+                    formatDate
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
