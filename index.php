@@ -1,11 +1,4 @@
 <?php
-// 检查是否已安装
-$lock_file = __DIR__ . '/.installed';
-if (!file_exists($lock_file)) {
-    header('Location: install.php');
-    exit;
-}
-
 $counterFile = './api/num.txt';
 
 // 获取访问次数
