@@ -18,8 +18,8 @@ A dynamic wallpaper API service that automatically serves appropriate wallpapers
 
 ### Prerequisites
 
-- PHP 7.4 or higher
-- MySQL/MariaDB database
+- PHP version 7.4 or higher, version 8.0 recommended
+- MySQL database version 5.7 or higher
 - Web server (Apache/Nginx)
 
 ### Installation
@@ -44,6 +44,7 @@ cd pictureapi
 2. Import the database schema (if provided)
 3. Configure database settings in the installation wizard
 4. Complete the setup process
+5. Default backend login addresses: /api/login.php (image review) and /upload/admin.php (upload management)
 
 ## 📖 API Usage
 
