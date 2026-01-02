@@ -76,6 +76,7 @@ body {
 ```
 
 ## 🏗️ 项目结构
+```
 picapi-pub/
 ├── public/
 │   ├── api/           # API端点
@@ -85,7 +86,7 @@ picapi-pub/
 │   ├── index.php     # 主界面
 │   └── install.php   # 安装向导
 └── desc.txt          # 站点描述
-
+```
 ## 🔧 配置
 
 系统通过基于Web的安装程序自动处理配置。主要配置选项包括：
