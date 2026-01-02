@@ -18,8 +18,8 @@
 
 ### 环境要求
 
-- PHP 7.4 或更高版本
-- MySQL/MariaDB 数据库
+- PHP 7.4 或更高版本，推荐8.0版本
+- MySQL 5.7 或更高版本数据库
 - Web服务器 (Apache/Nginx)
 
 ### 安装步骤
@@ -44,7 +44,7 @@ cd pictureapi
 2. 导入数据库架构（如果提供）
 3. 在安装向导中配置数据库设置
 4. 完成设置过程
-
+5. 默认后台登录地址 /api/login.php（图片审核） 和/upload/admin.php（上传管理）
 ## 📖 API使用
 
 ### 基本用法
