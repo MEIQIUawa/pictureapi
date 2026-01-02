@@ -27,6 +27,8 @@ A dynamic wallpaper API service that automatically serves appropriate wallpapers
 1. Clone the repository:
 ```bash
 git clone https://github.com/MEIQIUawa/pictureapi.git
+mkdir pictureapi/public && mv pictureapi/* pictureapi/public
+echo '<div>Hello World!</div>' > pictureapi/desc.txt
 cd pictureapi
 ```
 
