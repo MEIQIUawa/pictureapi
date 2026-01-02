@@ -27,6 +27,8 @@
 1. 克隆仓库：
 ```bash
 git clone https://github.com/MEIQIUawa/pictureapi.git
+mkdir pictureapi/public && mv pictureapi/* pictureapi/public
+echo '<div>Hello World!</div>' > pictureapi/desc.txt
 cd pictureapi
 ```
 
